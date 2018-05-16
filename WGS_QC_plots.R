@@ -10,12 +10,19 @@ option_list = list(
   make_option(c("-f", "--FILELIST"), type="character", default="/hpc/cog_bioinf/cuppen/project_data/Freek_SNV/FilelistFreek.txt", 
               help="The filelist", metavar="character"),
   make_option(c("-o", "--OUTPUT_PATH"), type="character", default="/hpc/cog_bioinf/cuppen/project_data/Freek_SNV", 
-              help="The output figure", metavar="character")
+              help="The output path", metavar="character"),
+  make_option(c("-w", "--OVERWRITE"), type="character", default="False", 
+              help="Overwrite figure if it exists", metavar="character")
 ); 
 
 opt_parser = OptionParser(option_list=option_list);
 opt = parse_args(opt_parser);
 
+outpdf = paste0(opt$OUTPUT_PATH, "/WGS_QC/Output/WGS_QC.pdf")
+
+if (file.exists(outpdf) & opt$OVERWRITE != "true"){
+  quit()
+}
 
 ####________________Read filelist and check for duplicates________________####
 filelist = read.table(opt$FILELIST, header = T, stringsAsFactors = F, sep = "\t")
@@ -144,7 +151,7 @@ ReadExclusionFig = ggplot(qctable4, aes(x = Sample, y = nrexcluded, fill = Legen
   theme(axis.text.x = element_text(angle = 80, size = 6, margin = margin(t = 20))) + 
   guides(fill=guide_legend("Exclusion filter"))
 
-pdf(paste0(opt$OUTPUT_PATH, "/WGS_QC/Output/WGS_QC.pdf"), paper = "a4")
+pdf(outpdf, paper = "a4")
 MeanCovFig
 NrReadsFig
 MinReadCovFig
