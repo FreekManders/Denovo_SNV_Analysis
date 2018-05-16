@@ -5,6 +5,10 @@ import re
 import datetime
 from timeit import default_timer as timer
 
+#Modules
+python = "python/2.7.10"
+R = "R/3.4.1"
+bedtools = "bed/bedtools/2.25.0"
 
 #Start timer
 start = timer()
@@ -30,7 +34,7 @@ def ini_parser(ini_fname):
 	return ini_dict
 	
 	
-def create_bash(h_rt, h_vmem, scriptname, beas, log_script, modules, language, arguments, pipeline_path, output_path, time, log, email):
+def create_bash(h_rt, h_vmem, scriptname, beas, hold_jid = "", log_script, modules, language, arguments, pipeline_path, output_path, time, log, email):
 	"""Creates and runs a bash submission script.
 	
 	As its input you need to provide the submission variables (h_rt ect.) as well as the name of the script itself, its arguments and the language in which the script was written"""
@@ -46,6 +50,9 @@ def create_bash(h_rt, h_vmem, scriptname, beas, log_script, modules, language, a
 			bash_file.write("#$ -o {0}/Logs/{1}_{2}_output\n#$ -e {0}/Logs/{1}_{2}_errors\n".format(output_path, scriptnamenoextension, time))
 		else:
 			bash_file.write("#$ -o /dev/null\n#$ -e /dev/null\n")
+		
+		if hold_jid is not "":
+			bash_file.write("#$ -hold_jid {0}\n".format(hold_jid))
 		
 		if email is not "":
 			bash_file.write("#$ -M {0}\n".format(email))
@@ -111,8 +118,11 @@ if log == "true":
 #Run the different parts of the pipeline
 if ini_dict["WGS_QC"].lower() == "true":
 	arguments = "--FILELIST {0} --OUTPUT_PATH {1} --OVERWRITE {2}".format(filelist, output_path, overwrite)
-	create_bash(h_rt = ini_dict["WGS_QC_TIME"], h_vmem = ini_dict["WGS_QC_MEM"], scriptname = "WGS_QC_plots.R", beas = ini_dict["WGS_QC_BEAS"], log_script = ini_dict["WGS_QC_LOG"], modules = ["R/3.4.1"], language = "Rscript", arguments = arguments, pipeline_path = pipeline_path, output_path = output_path, time = time, log = log, email = email)
+	create_bash(h_rt = ini_dict["WGS_QC_TIME"], h_vmem = ini_dict["WGS_QC_MEM"], scriptname = "WGS_QC_plots.R", beas = ini_dict["WGS_QC_BEAS"], log_script = ini_dict["WGS_QC_LOG"], modules = [R], language = "Rscript", arguments = arguments, pipeline_path = pipeline_path, output_path = output_path, time = time, log = log, email = email)
 
+if ini_dict["CallableLoci"].lower() == "true":
+	arguments = "--FILELIST {0} --OUTPUT_PATH {1} --OVERWRITE {2}".format(filelist, output_path, overwrite)
+	create_bash(h_rt = ini_dict["CallableLoci_TIME"], h_vmem = ini_dict["CallableLoci_MEM"], scriptname = "GetCallableLoci.py", beas = ini_dict["CallableLoci_BEAS"], log_script = ini_dict["CallableLoci_LOG"], modules = [python, bedtools], language = "python", arguments = arguments, pipeline_path = pipeline_path, output_path = output_path, time = time, log = log, email = email)
 
 #End timer
 timeend = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")
