@@ -3,6 +3,8 @@ import os
 import argparse
 import datetime
 from timeit import default_timer as timer
+import subprocess
+import signal
 
 ###Start timer
 start = timer()
@@ -33,9 +35,11 @@ with open(filelist) as f1:
 	for line in f1:
 		line = line.rstrip()
 		columns = line.split("\t")
+		sample = columns[0]
 		family = columns[3]
-		if family not in families and family != "MP14":
-			families.append(family)
+		relation = columns[6]
+		relation = relation.lower()
+		if "child" in relation:
 			run = columns[1]
 			
 			###Find the correct vcf file
@@ -50,9 +54,15 @@ with open(filelist) as f1:
 					print "vcf file does not exists."
 					continue
 			
+			sampleids = subprocess.check_output(["vcf-query", "-l", vcffile], preexec_fn=lambda:signal.signal(signal.SIGPIPE, signal.SIG_DFL))
+			sampleids = sampleids.split("\n")
+			del sampleids[-1] #Remove empty newline
+			if len(sampleids) != 3:
+				continue
+			
 			###Create command to filter vcf files based on the CallableLoci.bed files.
 			callablelocibed = "{0}/{1}_intersect_CallableLoci.bed".format(callablelocidir, family)
-			outvcf = "{0}/CallableVCF/{1}_filtered_callable_annotated".format(outdir, family)
+			outvcf = "{0}/CallableVCF/{1}_filtered_callable_annotated".format(outdir, sample)
 			callablevcf = "{0}.recode.vcf".format(outvcf)
 			if not os.path.isfile(callablevcf) or args.OVERWRITE == "true":
 				command1 = "vcftools --gzvcf {0} --bed {1} --out {2} --recode --recode-INFO-all; echo Finished filtering the vcf file for family: {3};".format(vcffile, callablelocibed, outvcf, family)

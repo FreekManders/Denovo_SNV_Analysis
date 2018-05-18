@@ -49,6 +49,7 @@ for family in families:
 					line = "\t".join(line)
 					outfile.write("{0}\n".format(line))
 	print "Removed missing genotypes for family: {0}".format(family)	
+	
 ###End timer
 timeend = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")
 print "Finished running script at: {0}".format(timeend)

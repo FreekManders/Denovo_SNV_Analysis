@@ -79,4 +79,11 @@ for famid in callables.keys():
 			print "intersecting: {0}: child 3".format(famid)
 			command = "intersectBed -a {0} -b {1} | intersectBed -a - -b {2} > {3}".format(child3, father, mother, intersectedLoci3)
 			os.system(command)
-
+	
+###End timer
+timeend = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")
+print "Finished running script at: {0}".format(timeend)
+end = timer()
+execution_time = int(end - start)
+execution_time = datetime.timedelta(seconds = execution_time)
+print "Elapsed time: {0}".format(execution_time)

@@ -18,25 +18,24 @@ args = parser.parse_args()
 filelist = args.FILELIST
 outdir = "{0}/Callableregion_NrMendelViols".format(args.OUTPUT_PATH)
 		
-###Get families from the filelist.
-families = []
+###Remove the missing GTs from the MendelViol files.
 with open(filelist) as f1:
 	next(f1)
 	for line in f1:
 		line = line.rstrip()
 		columns = line.split("\t")
+		sample = columns[0]
 		family = columns[3]
-		if family not in families:
-			families.append(family)
-
-###Remove the missing GTs from the MendelViol files.
-for family in families:
-	mendel_fname = "{0}/PBT/{1}_fullgenotypes.MendelViol".format(outdir, family)
-	vcf_fname = "{0}/PBT/{1}.phased.vcf.gz".format(outdir, family)
-	denovovcf_fname = "{0}/Denovo/{1}_denovo".format(outdir, family)
-	if os.path.isfile(mendel_fname) and os.path.isfile(vcf_fname) and (not os.path.isfile(denovovcf_fname) or args.OVERWRITE == "true"):
-		command = "vcftools --gzvcf {0} --positions {1} --out {2} --recode --recode-INFO-all".format(vcf_fname, mendel_fname, denovovcf_fname)
-		os.system(command)
+		relation = columns[6]
+		relation = relation.lower()
+		if "child" in relation:
+			mendel_fname = "{0}/PBT/{1}_fullgenotypes.MendelViol".format(outdir, family)
+			vcf_fname = "{0}/PBT/{1}.phased.vcf.gz".format(outdir, family)
+			denovovcf = "{0}/Denovo/{1}_denovo".format(outdir, sample)
+			denovovcf_fname = "{0}.recode.vcf".format(denovovcf)
+			if os.path.isfile(mendel_fname) and os.path.isfile(vcf_fname) and (not os.path.isfile(denovovcf_fname) or args.OVERWRITE == "true"):
+				command = "vcftools --gzvcf {0} --positions {1} --out {2} --recode --recode-INFO-all".format(vcf_fname, mendel_fname, denovovcf)
+				os.system(command)
 	
 ###End timer
 timeend = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")
