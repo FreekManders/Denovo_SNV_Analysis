@@ -28,7 +28,7 @@ denovodir = "{0}/Callableregion_NrMendelViols/TrueDenovo/SNVs".format(args.OUTPU
 snpsift = args.SNPSIFT
 denovogear = args.DENOVOGEAR
 
-#Determine samples from filelist			
+###Determine samples from filelist			
 samples = []
 runs = {}
 with open(filelist) as f1:
@@ -45,7 +45,7 @@ with open(filelist) as f1:
 			runs[sample] = run	
 print "Finished reading the filelist"
 
-#Create the dnm files for denovogear from the truedenovo vcf.
+###Create the dnm files for denovogear from the truedenovo vcf.
 for sample in samples:	
 	denovovcf = "{0}/{1}_Truedenovo.vcf".format(denovodir, sample)
 	dnmf = "{0}/Dnm/{1}_dnm.txt".format(outdir, sample)
@@ -55,7 +55,7 @@ for sample in samples:
 		print "Created dnm file for sample: {0}".format(sample)
 print "Finished with creating the dnm files"
 
-#Create the genotypes files for denovogear from the  vcf files with only callable regions. 
+###Create the genotypes files for denovogear from the  vcf files with only callable regions. 
 for sample in samples:
 	vcf = "{0}/{1}_filtered_callable_annotated.recode.vcf".format(vcfdir, sample)
 	snptable = "{0}/Snp_gt/{1}_snp_gt.txt".format(outdir, sample)
@@ -65,7 +65,7 @@ for sample in samples:
 		print "Created genotypes file for sample: {0}".format(sample)
 print "Finished with the genotypes files"
 
-#Create genotypes files with bases instead of the 0/1 format. These are created from the earlier genotypes files.
+###Create genotypes files with bases instead of the 0/1 format. These are created from the earlier genotypes files.
 for sample in samples:
 	snptable = "{0}/Snp_gt/{1}_snp_gt.txt".format(outdir, sample)
 	snptablebases = "{0}/Snp_gt_bases/{1}_snp_gt_bases.txt".format(outdir, sample)
@@ -98,7 +98,7 @@ for sample in samples:
 print "Finished with converting the genotypes files format so it contains actual bases"
 
 
-#Run Denovogear phaser.
+###Run Denovogear phaser.
 for sample in samples:
 	dnmf = "{0}/Dnm/{1}_dnm.txt".format(outdir, sample)
 	snptablebases = "{0}/Snp_gt_bases/{1}_snp_gt_bases.txt".format(outdir, sample)
@@ -111,12 +111,12 @@ for sample in samples:
 		print "Ran denovogear for sample: {0}".format(sample)
 print "Finished with running denovogear"
 
-#Transform the denovogear output in a useful table
+###Transform the denovogear output in a useful table
 for sample in samples:
 	denovogear = "{0}/Denovogearout/{1}_denovogear.txt".format(outdir, sample)
 	denovotable = "{0}/Denovotables/{1}_denovogear.txt".format(outdir, sample)
 	denovotablegz = "{0}.gz".format(denovotable)
-	if os.path.isfile(denovogear) and not os.path.isfile(denovotable) and (not os.path.isfile(denovotablegz) or args.OVERWRITE == "true"):
+	if os.path.isfile(denovogear) and ((not os.path.isfile(denovotable) and not os.path.isfile(denovotablegz)) or args.OVERWRITE == "true"):
 		dnms = {}
 		with open(denovogear) as dngear:
 			for line in dngear:
@@ -164,25 +164,29 @@ for sample in samples:
 		choices = ["Father", "Mother", "Notphased", "Notenoughreadsandsnps"]
 		dnmst["Parent"] = np.select(conditions, choices, default = "Ambiguous")
 		
-		#dnmst["chrompos"] = dnmst[["chrom", "pos"]].apply(lambda x: ":".join(x), axis = 1)
 		dnmst = dnmst[["chrom", "pos", "Parent", "readsfather", "readsmother", "totalreads", "nrhaps", "readsbyhap"]]
 		dnmst.to_csv(denovotable, sep = "\t", index = False, header = False)
 		print "Transformed the denovogear output to a table to annotate the vcf for sample: {0}.".format(sample)
 print "Finished with transforming the denovogear output to tables to annotate the vcfs."
 
-#Use the denovogear output table to annotate the samples denovo snv vcf.
+###Write the .hdr file needed to annotate the denovo snv vcf with the phasing data.
+annhdr_fname = "{0}/annotations.hdr".format(outdir)
+if not os.path.isfile(annhdr_fname):
+	with open(annhdr_fname, "w") as annhdr:
+		annhdr.write("""##INFO=<ID=PARENT,Number=1,Type=String,Description="Shows the parent of origin according to denovogear phasing">\n##INFO=<ID=readsfather,Number=1,Type=String,Description="Shows the number of reads phased to the father by denovogear">\n##INFO=<ID=readsmother,Number=1,Type=String,Description="Shows the number of reads phased to the mother by denovogear">\n##INFO=<ID=totalphasedreads,Number=1,Type=String,Description="Shows the number of reads phased by denovogear">\n##INFO=<ID=nrhaps,Number=1,Type=String,Description="Shows the number of sites phased to the denovo snv by denovogear">\n##INFO=<ID=readsbyhap,Number=1,Type=String,Description="Shows the number of reads phased to denovo snvs by denovogear. This is split by site and parent as father1.mother1.father2 ect.">""")
+
+###Use the denovogear output table to annotate the samples denovo snv vcf.
 for sample in samples:
 	denovotable = "{0}/Denovotables/{1}_denovogear.txt".format(outdir, sample)
 	denovotablegz = "{0}.gz".format(denovotable)
 	denovovcf = "{0}/{1}_Truedenovo.vcf".format(denovodir, sample)
-	annhdr = "{0}/annotations.hdr".format(outdir)
 	denovovcftemp = "{0}/{1}_Truedenovotemp.vcf".format(denovodir, sample)
 	
-	if os.path.isfile(denovotable) and os.path.isfile(denovovcf) and os.path.isfile(annhdr) and (not os.path.isfile(denovotablegz) or args.OVERWRITE == "true"):
+	if os.path.isfile(denovotable) and os.path.isfile(denovovcf) and (not os.path.isfile(denovotablegz) or args.OVERWRITE == "true"):
 		os.system("sort -k1,1 -k2,2n {0} -o {0} ".format(denovotable))
 		os.system("bgzip {0}".format(denovotable))
 		os.system("tabix -s1 -b2 -e2 {0}".format(denovotablegz))
-		command = "bcftools annotate -a {0} -c CHROM,POS,PARENT,readsfather,readsmother,totalphasedreads,nrhaps,readsbyhap {1} -h {2} -o {3}".format(denovotablegz, denovovcf, annhdr, denovovcftemp)
+		command = "bcftools annotate -a {0} -c CHROM,POS,PARENT,readsfather,readsmother,totalphasedreads,nrhaps,readsbyhap {1} -h {2} -o {3}".format(denovotablegz, denovovcf, annhdr_fname, denovovcftemp)
 		os.system(command)
 		os.remove(denovovcf)
 		os.rename(denovovcftemp, denovovcf)

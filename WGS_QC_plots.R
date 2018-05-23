@@ -11,8 +11,6 @@ option_list = list(
               help="The filelist", metavar="character"),
   make_option(c("-o", "--OUTPUT_PATH"), type="character", default="/hpc/cog_bioinf/cuppen/project_data/Freek_SNV", 
               help="The output path", metavar="character"),
-  make_option(c("-w", "--OVERWRITE"), type="character", default="False", 
-              help="Overwrite figure if it exists", metavar="character")
 ); 
 
 opt_parser = OptionParser(option_list=option_list);
@@ -20,9 +18,6 @@ opt = parse_args(opt_parser);
 
 outpdf = paste0(opt$OUTPUT_PATH, "/WGS_QC/Output/WGS_QC.pdf")
 
-if (file.exists(outpdf) & opt$OVERWRITE != "true"){
-  quit()
-}
 
 ####________________Read filelist and check for duplicates________________####
 filelist = read.table(opt$FILELIST, header = T, stringsAsFactors = F, sep = "\t")
