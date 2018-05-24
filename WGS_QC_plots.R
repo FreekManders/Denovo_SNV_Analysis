@@ -10,7 +10,7 @@ option_list = list(
   make_option(c("-f", "--FILELIST"), type="character", default="/hpc/cog_bioinf/cuppen/project_data/Freek_SNV/FilelistFreek.txt", 
               help="The filelist", metavar="character"),
   make_option(c("-o", "--OUTPUT_PATH"), type="character", default="/hpc/cog_bioinf/cuppen/project_data/Freek_SNV", 
-              help="The output path", metavar="character"),
+              help="The output path", metavar="character")
 ); 
 
 opt_parser = OptionParser(option_list=option_list);
