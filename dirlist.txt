@@ -21,7 +21,6 @@ NrMendelViols
 NrMendelViols/Output
 Phenotypes
 Phenotypes/Phenomatch_raw_output
-Phenotypes/backup
 Phenotypes/Phenomatch_output
 Phenotypes/Phenomatch_input
 Callableregion_NrMendelViols

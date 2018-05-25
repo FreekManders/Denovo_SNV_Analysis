@@ -478,11 +478,20 @@ create_bash(mode = "FilterFrequencies", scriptname = "FilterFrequencies.py", hol
 create_bash(mode = "Inactivesnvs_basedoncelltype", scriptname = "Inactivesnvs_basedoncelltype.R", hold_jid = "FilterFrequencies", modules = [R], language = "Rscript")
 
 #removeinactivesnvs
-create_bash(mode = "removeinactivesnvs", scriptname = "removeinactivesnvs.R", hold_jid = "FilterFrequencies", modules = [R], language = "Rscript")
+arguments = "{0} --OVERWRITE {1}".format(std_arguments, overwrite)
+create_bash(mode = "removeinactivesnvs", scriptname = "removeinactivesnvs.R", hold_jid = "FilterFrequencies", modules = [R], language = "Rscript", arguments = arguments)
 
 #snv_gene_overlap_count
 arguments = "{0} --GENE_LIST {1}".format(std_arguments, gene_list)
 create_bash(mode = "snv_gene_overlap_count", scriptname = "snv_gene_overlap_count.R", hold_jid = "removeinactivesnvs", modules = [R], language = "Rscript", arguments = arguments)
+
+#match_phenotypes
+arguments = "{0} --OVERWRITE {1} --HPO_PATIENTS_EXCELL {2} --EXTRA_PHENOTYPE {3} --PLOT {4} --GENES2PHENO {5} --OVERLAP_GENE_SNV_DIST {6} --PHENOMATCH {7} --KNOWNGENES_ENTREZ {8} --HPO_OBO {9}".format(std_arguments, overwrite, ini_dict["HPO_PATIENTS_EXCELL"], ini_dict["match_phenotypes_EXTRA_PHENOTYPE"], ini_dict["match_phenotypes_PLOT"], ini_dict["GENES2PHENO"], ini_dict["OVERLAP_GENE_SNV_DIST"], ini_dict["PHENOMATCH"], ini_dict["KNOWNGENES_ENTREZ"], ini_dict["HPO_OBO"])
+create_bash(mode = "match_phenotypes", scriptname = "match_phenotypes.R", hold_jid = "removeinactivesnvs", modules = [R], language = "Rscript", arguments = arguments)
+
+#snv_gene_overlap_table
+arguments = "{0} --PCHIC_FOLDER {1} --PCHIC_CELLTYPES {2} --GENE_LIST {3} --PLOT {4} --RNA_FOLDER1 {5} --RNA_FOLDER2 {6} --OVERLAP_GENE_SNV_DIST {7}".format(std_arguments, ini_dict["PCHIC_FOLDER"], ini_dict["PCHIC_CELLTYPES"], gene_list, ini_dict["snv_gene_overlap_table_PLOT"], ini_dict["RNA_FOLDER1"], ini_dict["RNA_FOLDER2"], ini_dict["OVERLAP_GENE_SNV_DIST"])
+create_bash(mode = "snv_gene_overlap_table", scriptname = "snv_gene_overlap_table.R", hold_jid = "match_phenotypes", modules = [R], language = "Rscript", arguments = arguments)
 
 ####____________________End timer_____________________####
 timeend = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")
