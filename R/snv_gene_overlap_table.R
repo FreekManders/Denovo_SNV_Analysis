@@ -23,7 +23,7 @@ option_list = list(
               help="The filelist", metavar="character"),
   make_option(c("-o", "--OUTPUT_PATH"), type="character", default="/hpc/cog_bioinf/cuppen/project_data/Freek_SNV", 
               help="The output path", metavar="character"),
-  make_option(c("--PLOT"), type="character", default="True", 
+  make_option(c("--PLOT"), type="character", default="true", 
               help="Whether or not to plot", metavar="character"),
   make_option(c("--OVERLAP_GENE_SNV_DIST"), type="integer", default=500000, 
               help="area around the snv which will be overlapped with genes."),
@@ -141,7 +141,7 @@ allvcfgrmatched$GoNLv5_AC[is.na(allvcfgrmatched$GoNLv5_AC)] = 0
 allvcfgrmatched$gnomAD_AC[is.na(allvcfgrmatched$gnomAD_AC)] = 0
 allvcfgrmatched$PON_COUNT[is.na(allvcfgrmatched$PON_COUNT)] = 0
 
-if (plot == "True"){
+if (plot == "true"){
   ###Determine number of hpo terms per gene
   nrhpoterms = allvcfgrmatched$Number_HPO_Terms_Gene %>% as.data.frame(.)
   nrhpopergene_fig = ggplot(data = nrhpoterms, aes(x = .)) +
@@ -217,7 +217,7 @@ write.table(snv_gene_hpo, "Possibly_pathogenic/SNVs/Near_gene/snv_gene.txt", quo
 # anti_join(exonic_matchedgene, exonic_matchedgene_hpo, by = c("sample", "seqnames", "start"))
 
 
-if (plot == "True"){
+if (plot == "true"){
 ###Plot characteristics of snv_gene combinations with hpo phenomatch scores
   snv_gene_counts = data.frame("group" = c("all", "with phenomatch score"), "counts" = c(nrow(snv_gene), nrow(snv_gene_hpo[snv_gene_hpo$phenoMatchScore != 0,])))
   snv_gene_counts_fig = ggplot(data = snv_gene_counts, aes(x = group, y = counts, fill = group)) +
@@ -239,7 +239,7 @@ if (plot == "True"){
   dev.off()
 }
 
-if (plot == "True"){
+if (plot == "true"){
   ###Plot inheritance of the genes.
   fname_genes2pheno = "Phenotypes/genes2phenotype.txt"
   genes2pheno = read.delim(fname_genes2pheno, header = F, skip = 1)
@@ -373,7 +373,7 @@ snv_gene_table$fraction_cells_PCHiC_makeup = paste0(nrinteractions, "/", nrcells
 
 write.table(snv_gene_table, "Possibly_pathogenic/SNVs/Near_gene/snv_gene_rna_pchic.txt", quote = F, row.names = F, sep = "\t")
 
-if (plot == "True"){
+if (plot == "true"){
   
   fraction_cells_PCHiC = as.data.frame(table(snv_gene_table$fraction_cells_PCHiC))
   pchic_fig = ggplot(data = fraction_cells_PCHiC, aes(x = Var1, y = Freq)) +
@@ -448,7 +448,7 @@ write.table(possPathogenicExonic, "Possibly_pathogenic/SNVs/Near_gene/possibly_p
 possPathogenicExonicTableReport = possPathogenicExonic %>%  dplyr::select(seqnames, start, REF, ALT, sample, hgnc_symbol, pLI, RVIS, HI, DDG2P, GoNLv5_AC, gnomAD_AC, PON_COUNT, Effects_exonic, DANN, phastCons46way, snpsift_impact, distance, distancetostart, distancetotss, genes_between, Ensemblregbuild, same_gene, phenoMatchScore, baseMean, log2FoldChange, log2FoldChange_shrunk, pvalue, padj_local, fraction_cells_PCHiC_makeup, Fetal_Brain_Female_short, Fetal_Brain_Male_short, Brain_Hippocampus_Middle_short, Brain_Germinal_Matrix_short, CD14_Primary_Cells_short)
 write.table(possPathogenicExonicTableReport, "Possibly_pathogenic/SNVs/Near_gene/possibly_pathogenic_Exoncic_interestingcollumns.txt", quote = F, row.names = F, sep = "\t")
 
-if (plot == "True"){
+if (plot == "true"){
 #Venn diagrams showing on which criteria non exonic snv-gene combinations were classified as pathogenic.
   nrPCHiCandDist = possPathogenic %>% dplyr::filter((fraction_cells_PCHiC > 0.2) & (distancetotss < 100000 & (!is.na(Ensemblregbuild) | Fetal_Brain_Female %in% c("1_TssA", "2_TssAFlnk", "6_EnhG", "7_Enh", "10_TssBiv", "11_BivFlnk", "12_EnhBiv") | Fetal_Brain_Male %in% c("1_TssA", "2_TssAFlnk", "6_EnhG", "7_Enh", "10_TssBiv", "11_BivFlnk", "12_EnhBiv")))) %>% nrow(.)
   nrPCHiC = possPathogenic %>% dplyr::filter((fraction_cells_PCHiC > 0.2)) %>% nrow(.)
@@ -475,7 +475,7 @@ if (plot == "True"){
  
 ####_______Create final report figure, for the non exonic possibly pathogenic snvs_____________####
 #Facet 1: patient info
-if (plot == "True"){
+if (plot == "true"){
   Patient = data.frame(id = possPathogenic$phenoAsId,
                         Variable = "Patient ID",
                         Facet = "Patient info",

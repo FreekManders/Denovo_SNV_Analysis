@@ -18,6 +18,7 @@ parser.add_argument("-o", "--OUTPUT_PATH", default = "/hpc/cog_bioinf/cuppen/pro
 parser.add_argument("-w", "--OVERWRITE", default = "False", help = "Overwrite the results if they already exist.")
 parser.add_argument("-g", "--GENOME", default = "/hpc/cog_bioinf/GENOMES/Homo_sapiens.GRCh37.GATK.illumina/Homo_sapiens.GRCh37.GATK.illumina.fasta", help = "The used genome in fasta format.")
 parser.add_argument("--GATK", default = "/hpc/cog_bioinf/common_scripts/GenomeAnalysisTK-3.4-46/GenomeAnalysisTK.jar", help = "The GATK jar.")
+parser.add_argument("--MUTATIONPRIOR", default = "1.0E-4", help = "The mutation prior that is being used.")
 parser.add_argument("-t", "--THREADS", default = 1, type = int, help = "Number of threads to use")
 args = parser.parse_args()
 
@@ -64,7 +65,7 @@ with open(filelist) as f1:
 			callablelocibed = "{0}/{1}_intersect_CallableLoci.bed".format(callablelocidir, family)
 			outvcf = "{0}/CallableVCF/{1}_filtered_callable_annotated".format(outdir, sample)
 			callablevcf = "{0}.recode.vcf".format(outvcf)
-			if not os.path.isfile(callablevcf) or args.OVERWRITE == "true":
+			if os.path.isfile(callableLocibed) and (not os.path.isfile(callablevcf) or args.OVERWRITE == "true"):
 				command1 = "vcftools --gzvcf {0} --bed {1} --out {2} --recode --recode-INFO-all; echo Finished filtering the vcf file for family: {3};".format(vcffile, callablelocibed, outvcf, family)
 				print "Created command to make vcf file with only variants in callable regions for family: {0}".format(family)
 			else:
@@ -76,7 +77,7 @@ with open(filelist) as f1:
 			menviol = "{0}/PBT/{1}.MendelViol".format(outdir, family)
 			phasedvcf = "{0}/PBT/{1}.phased.vcf.gz".format(outdir, family)
 			if not os.path.isfile(menviol) or not os.path.isfile(phasedvcf) or args.OVERWRITE == "true":
-				command2 = "java -Xmx10g -jar {0} -T PhaseByTransmission -V {1} -R {2} --MendelianViolationsFile {3} -o {4} -ped {5} --DeNovoPrior 1.0E-4; echo Finished with PhaseByTransmission for family: {6}".format(jar, callablevcf, genome, menviol, phasedvcf, ped, family)
+				command2 = "java -Xmx10g -jar {0} -T PhaseByTransmission -V {1} -R {2} --MendelianViolationsFile {3} -o {4} -ped {5} --DeNovoPrior {6}; echo Finished with PhaseByTransmission for family: {7}".format(jar, callablevcf, genome, menviol, phasedvcf, ped, args.MUTATIONPRIOR, family)
 				print "Created command to run PhaseByTransmission for family {0}".format(family)
 			else:
 				print "Phase by transmission has already been run for family: {0} and overwrite is false".format(family)

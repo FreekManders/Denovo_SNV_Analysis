@@ -12,7 +12,7 @@ library(RColorBrewer)
 option_list = list(
   make_option(c("-f", "--FILELIST"), type="character", default="/hpc/cog_bioinf/cuppen/project_data/Freek_SNV/FilelistFreek.txt", 
               help="The filelist", metavar="character"),
-  make_option(c("--OVERWRITE"), type="character", default="True", 
+  make_option(c("--OVERWRITE"), type="character", default="true", 
               help="Whether or not to overwrite existing data files", metavar="character"),
   make_option(c("-o", "--OUTPUT_PATH"), type="character", default="/hpc/cog_bioinf/cuppen/project_data/Freek_SNV", 
               help="The output path", metavar="character"),
@@ -20,7 +20,7 @@ option_list = list(
               help="The excell file containing the hpo terms of the patients", metavar="character"),
   make_option(c("--EXTRA_PHENOTYPE"), type="character", default="HP:0000006", 
               help="HPO term added to all patients", metavar="character"),
-  make_option(c("--PLOT"), type="character", default="True", 
+  make_option(c("--PLOT"), type="character", default="true", 
               help="Whether or not to plot", metavar="character"),
   make_option(c("--GENES2PHENO"), type="character", default="/hpc/cog_bioinf/cuppen/project_data/Complex_svs/Common_data/Genes/HPO/20171211_ALL_SOURCES_ALL_FREQUENCIES_genes_to_phenotype.txt", 
               help="A genes to pheno type file from the HPO consortium", metavar="character"),
@@ -83,10 +83,10 @@ write_phenotypes = function(fname_excel, fname_filelist, output_path, overwrite,
   phenotypes$HPO_ID = paste(phenotypes$HPO_ID, extra_phenotype, sep = ",")
   }
   phenotypes_out = paste0(output_path, "/Phenotypes/hpo_patients.txt")
-  if (!file.exists(phenotypes_out) | overwrite == "True"){
+  if (!file.exists(phenotypes_out) | overwrite == "true"){
     write.table(phenotypes[,c("Patient", "DGAP", "HPO_ID")], phenotypes_out, row.names = F, quote = F, sep = "\t")
   }
-   if (plot == "True"){
+   if (plot == "true"){
     #Count the occurences of the different phenotypes
     countcols = grep("Abnormality|Nervous_system|Neoplasm", colnames(phenotypes))
     counts = apply(phenotypes[,countcols], 2, function(x) {sum(x != "")})
@@ -135,7 +135,7 @@ mod_genes2pheno_file = function(fname, output_path, overwrite){
 	genes2pheno = read.delim(fname, header = F, skip = 1)
 	genes2pheno$V2 = paste(genes2pheno$V1, genes2pheno$V2, sep = "__")
 	
-	if (!file.exists(fname_out) | overwrite == "True"){
+	if (!file.exists(fname_out) | overwrite == "true"){
 	  cat(paste0(headerline, "\n"), file = fname_out)
 	  write.table(genes2pheno, fname_out , row.names = F, quote = F, sep = "\t", append = T, col.names = F)
   }
@@ -205,7 +205,7 @@ Run_Phenomatch <- function(phenomatch, knowngenes_entrez, output_path, snv, exte
     
     # Phenomatch automatically adds ".overlapped_genes.txt" to the output filename
     phenomatch_file <- paste(phenomatch_output_file, ".overlapped_genes.txt", sep = "")
-    if (file.exists(phenomatch_file) & overwrite != "True"){
+    if (file.exists(phenomatch_file) & overwrite != "true"){
       next
     }
     
@@ -278,7 +278,7 @@ Run_Phenomatch <- function(phenomatch, knowngenes_entrez, output_path, snv, exte
     
     
     #Perform plotting
-    if(plot == "True"){
+    if(plot == "true"){
       phenomatch_overview_melted = phenomatch_overview %>%  dplyr::select(-sample) %>% melt(id.vars = "gene_symbol")
       phenomatch_overview_melted$value <- as.numeric(phenomatch_overview_melted$value)
       phenomatch_overview_melted$Score <- phenomatch_overview_melted$value

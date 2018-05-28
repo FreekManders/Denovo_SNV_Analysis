@@ -18,6 +18,7 @@ parser.add_argument("-o", "--OUTPUT_PATH", default = "/hpc/cog_bioinf/cuppen/pro
 parser.add_argument("-w", "--OVERWRITE", default = "False", help = "Overwrite the results if they already exist.")
 parser.add_argument("-g", "--GENOME", default = "/hpc/cog_bioinf/GENOMES/Homo_sapiens.GRCh37.GATK.illumina/Homo_sapiens.GRCh37.GATK.illumina.fasta", help = "The used genome in fasta format.")
 parser.add_argument("--GATK", default = "/hpc/cog_bioinf/common_scripts/GenomeAnalysisTK-3.4-46/GenomeAnalysisTK.jar", help = "The GATK jar.")
+parser.add_argument("--MUTATIONPRIOR", default = "1.0E-4", help = "The mutation prior that is being used.")
 parser.add_argument("--FAMILY", default = "MP14", help = "Family to run this script on")
 args = parser.parse_args()
 
@@ -93,7 +94,7 @@ for childnr in [1,2,3]:
 	menviol = "{0}/{1}_child{2}.MendelViol".format(famdir, family, childnr)
 	phasedvcf = "{0}/{1}_child{2}.phased.vcf.gz".format(famdir, family, childnr)
 	if not os.path.isfile(menviol) or not os.path.isfile(phasedvcf) or args.OVERWRITE == "true":
-		command = "java -Xmx2g -jar {0} -T PhaseByTransmission -V {1} -R {2} --MendelianViolationsFile {3} -o {4} -ped {5} --DeNovoPrior 1.0E-4".format(jar, callablevcf, genome, menviol, phasedvcf, ped_child)
+		command = "java -Xmx2g -jar {0} -T PhaseByTransmission -V {1} -R {2} --MendelianViolationsFile {3} -o {4} -ped {5} --DeNovoPrior {6}".format(jar, callablevcf, genome, menviol, phasedvcf, ped_child, args.MUTATIONPRIOR)
 		os.system(command)
 		print "Ran PBT"
 	else:

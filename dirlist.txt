@@ -18,7 +18,6 @@ Characteristics_denovo/Denovogear/Snp_gt
 Characteristics_denovo/Denovogear/Denovotables
 Characteristics_denovo/vcfannotations
 NrMendelViols
-NrMendelViols/Output
 Phenotypes
 Phenotypes/Phenomatch_raw_output
 Phenotypes/Phenomatch_output
@@ -38,6 +37,7 @@ Callableregion_NrMendelViols/TrueDenovo/SNVs/FPfilterlogs
 Callableregion_NrMendelViols/MP14
 Callableregion_NrMendelViols/Denovo
 Callableregion_NrMendelViols/Denovo/SNVs
+Callableregion_NrMendelViols/Denovo/Indels
 Callableregion_NrMendelViols/CallableVCF
 RNA
 RNA/MP01_06
