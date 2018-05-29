@@ -6,15 +6,15 @@ This is a pipeline for the identification, characterization and prioritization o
 ## USAGE:
 This pipeline works on the GRCh37 genome assembly.
 To run the pipeline:
-'''bash
+```bash
 python Denovo_snv_analysis.py
-'''
-Setting can be changed in the Denovo_snv_analysis.ini file.
+```
+Settings can be changed in the [Denovo_snv_analysis.ini](Denovo_snv_analysis.ini) file.
 
-This pipeline is designed to run on a Sun Grid Engine system. To run the pipeline on a different system, the Denovo_snv_analysis.py script would need to be changed.
+This pipeline is designed to run on a Sun Grid Engine system. To run the pipeline on a different system, the [Denovo_snv_analysis.py](Denovo_snv_analysis.py) script would need to be changed.
 
 
-##Dependencies
+## Dependencies:
 #### Core tools
 - Sun Grid Engine
 - Python >= 2.7.10
