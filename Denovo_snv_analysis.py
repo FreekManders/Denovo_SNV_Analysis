@@ -409,9 +409,9 @@ def create_bash(mode, scriptname, modules, language, arguments = std_arguments, 
 #WGS_QC
 create_bash(mode = "WGS_QC", scriptname = "WGS_QC_plots.R", modules = [R], language = "Rscript")
 
-#CallableLoci
+#GetCallableLoci
 arguments = "{0} --OVERWRITE {1}".format(std_arguments, overwrite)
-create_bash(mode = "CallableLoci", scriptname = "GetCallableLoci.py", modules = [python, bedtools], language = "python", arguments = arguments)
+create_bash(mode = "GetCallableLoci", scriptname = "GetCallableLoci.py", modules = [python, bedtools], language = "python", arguments = arguments)
 
 #Callableregions_and_runPbt
 arguments = "{0} --GATK {1} --GENOME {2} --THREADS {3} --OVERWRITE {4} --MUTATIONPRIOR {5}".format(std_arguments, gatk, genome, ini_dict["Callableregions_and_runPbt_THREADS"], overwrite, ini_dict["MUTATIONPRIOR"])

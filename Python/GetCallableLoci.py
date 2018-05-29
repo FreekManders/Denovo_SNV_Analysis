@@ -40,10 +40,12 @@ with open(filelist) as f1:
 		if not os.path.isfile(Selected_CallableLoci) or args.OVERWRITE == "true":
 			if os.path.isfile(CallableLoci):
 				command = "grep 'CALLABLE' {0} > {1}".format(CallableLoci, Selected_CallableLoci)
+				print "Filtering for Callable regions in sample: {0}".format(sample)
 			else:
 				CallableLoci = "{0}.gz".format(CallableLoci)
 				if os.path.isfile(CallableLoci):
-								command = "zgrep 'CALLABLE' {0} > {1}".format(CallableLoci, Selected_CallableLoci)
+					command = "zgrep 'CALLABLE' {0} > {1}".format(CallableLoci, Selected_CallableLoci)
+					print "Filtering for Callable regions in sample: {0}".format(sample)
 				else:
 					print "Callable loci file does not exist"
 					continue

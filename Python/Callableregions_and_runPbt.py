@@ -65,7 +65,7 @@ with open(filelist) as f1:
 			callablelocibed = "{0}/{1}_intersect_CallableLoci.bed".format(callablelocidir, family)
 			outvcf = "{0}/CallableVCF/{1}_filtered_callable_annotated".format(outdir, sample)
 			callablevcf = "{0}.recode.vcf".format(outvcf)
-			if os.path.isfile(callableLocibed) and (not os.path.isfile(callablevcf) or args.OVERWRITE == "true"):
+			if os.path.isfile(callablelocibed) and (not os.path.isfile(callablevcf) or args.OVERWRITE == "true"):
 				command1 = "vcftools --gzvcf {0} --bed {1} --out {2} --recode --recode-INFO-all; echo Finished filtering the vcf file for family: {3};".format(vcffile, callablelocibed, outvcf, family)
 				print "Created command to make vcf file with only variants in callable regions for family: {0}".format(family)
 			else:

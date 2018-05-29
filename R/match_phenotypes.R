@@ -58,7 +58,7 @@ read_phenotype_from_excell = function(fname, sheetname){
   return(phenotypes)
 }
 
-write_phenotypes = function(fname_excel, fname_filelist, output_path, overwrite, plot, extra_phenotype = ""){
+write_phenotypes = function(fname_excel, fname_filelist, output_path, plot, extra_phenotype = ""){
   
   filelist = read.table(fname_filelist, header = T, stringsAsFactors = F, sep = "\t")
   if (sum(duplicated(filelist$Sample)) >= 1){
@@ -83,9 +83,8 @@ write_phenotypes = function(fname_excel, fname_filelist, output_path, overwrite,
   phenotypes$HPO_ID = paste(phenotypes$HPO_ID, extra_phenotype, sep = ",")
   }
   phenotypes_out = paste0(output_path, "/Phenotypes/hpo_patients.txt")
-  if (!file.exists(phenotypes_out) | overwrite == "true"){
-    write.table(phenotypes[,c("Patient", "DGAP", "HPO_ID")], phenotypes_out, row.names = F, quote = F, sep = "\t")
-  }
+  write.table(phenotypes[,c("Patient", "DGAP", "HPO_ID")], phenotypes_out, row.names = F, quote = F, sep = "\t")
+  
    if (plot == "true"){
     #Count the occurences of the different phenotypes
     countcols = grep("Abnormality|Nervous_system|Neoplasm", colnames(phenotypes))
@@ -172,7 +171,7 @@ get_snv_windows = function(extension, fname_filelist, output_path){
 
 
 ####________Run phenomatch___________________________________________________________________________####
-Run_Phenomatch <- function(phenomatch, knowngenes_entrez, output_path, snv, extension, HPO_obo_file, overwrite, plot){
+Run_Phenomatch <- function(phenomatch, knowngenes_entrez, output_path, snv, extension, HPO_obo_file, plot){
   HPO_patients_file = paste0(output_path, "/Phenotypes/hpo_patients.txt")
   HPO_genes_phenotype = paste0(output_path, "/Phenotypes/genes2phenotype.txt")
   output_folder = paste0(output_path, "/Phenotypes/")
@@ -205,9 +204,7 @@ Run_Phenomatch <- function(phenomatch, knowngenes_entrez, output_path, snv, exte
     
     # Phenomatch automatically adds ".overlapped_genes.txt" to the output filename
     phenomatch_file <- paste(phenomatch_output_file, ".overlapped_genes.txt", sep = "")
-    if (file.exists(phenomatch_file) & overwrite != "true"){
-      next
-    }
+    
     
     # This is the command to run Phenomatch.
     phenomatch_command <- paste("java -jar ", 
@@ -312,8 +309,8 @@ Run_Phenomatch <- function(phenomatch, knowngenes_entrez, output_path, snv, exte
 
 ####________Run functions____________________________________________________________________________####
 
-write_phenotypes(output_path = opt$OUTPUT_PATH, extra_phenotype = opt$EXTRA_PHENOTYPE, fname_filelist = opt$FILELIST, fname_excel = opt$HPO_PATIENTS_EXCELL, overwrite = opt$OVERWRITE, plot = opt$PLOT)
+write_phenotypes(output_path = opt$OUTPUT_PATH, extra_phenotype = opt$EXTRA_PHENOTYPE, fname_filelist = opt$FILELIST, fname_excel = opt$HPO_PATIENTS_EXCELL, plot = opt$PLOT)
 mod_genes2pheno_file(fname = opt$GENES2PHENO, output_path = opt$OUTPUT_PATH, overwrite = opt$OVERWRITE)
 vcfsdf = get_snv_windows(extension = opt$OVERLAP_GENE_SNV_DIST, fname_filelist = opt$FILELIST, output_path = opt$OUTPUT_PATH)
-Run_Phenomatch(snv = vcfsdf, extension = opt$OVERLAP_GENE_SNV_DIST, output_path = opt$OUTPUT_PATH, HPO_obo_file = opt$HPO_OBO, phenomatch = opt$PHENOMATCH, knowngenes_entrez = opt$KNOWNGENES_ENTREZ, overwrite = opt$OVERWRITE, plot = opt$PLOT)
+Run_Phenomatch(snv = vcfsdf, extension = opt$OVERLAP_GENE_SNV_DIST, output_path = opt$OUTPUT_PATH, HPO_obo_file = opt$HPO_OBO, phenomatch = opt$PHENOMATCH, knowngenes_entrez = opt$KNOWNGENES_ENTREZ, plot = opt$PLOT)
 
