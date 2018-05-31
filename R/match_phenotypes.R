@@ -72,7 +72,7 @@ write_phenotypes = function(fname_excel, fname_filelist, output_path, plot, extr
   
   #combine excell sheets and remove wrong samples
   phenotypes = rbind(pheno_sv, pheno_xl, pheno_snv)
-  phenotypes = phenotypes %>% filter(grepl("^MP[0-9]{2}", Patient, perl = T) & !duplicated(Patient) & Patient != "MP28-3041") %>% dplyr::select(-Male, -Female)
+  phenotypes = phenotypes %>% filter(grepl("^MP[0-9]{2}", Patient, perl = T) & !duplicated(Patient)) %>% dplyr::select(-Male, -Female)
   phenotypes = inner_join(phenotypes, filelist, by = c("Patient" = "Sample"))
   phenotypes = replace(phenotypes, is.na(phenotypes), "")
   nrpatients = nrow(phenotypes)

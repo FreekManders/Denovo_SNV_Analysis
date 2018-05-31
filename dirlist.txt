@@ -48,3 +48,6 @@ RNA/MP01_06/DE/QC
 RNA/MP01_06/DE/MA-plots
 Logs
 Jobs
+Jobs/gnomADjobs
+Jobs/HMFPONjobs
+Jobs/bedjobs

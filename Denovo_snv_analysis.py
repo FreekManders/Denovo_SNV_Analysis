@@ -5,6 +5,7 @@ import re
 import datetime
 from timeit import default_timer as timer
 import pandas as pd
+import shutil
 
 ####____________________Start timer______________________####
 start = timer()
@@ -107,7 +108,7 @@ def annotategnomAD(filelist, output_path, overwrite, snpsift, gnomad_folder, tim
 			command3 = """rm ${vcfchromanno}"""
 			fullbash = "{0}\n{1}\n{2}\n{3}".format(bashsettingsjoin, command1, command2, command3)
 			with open(bashname, "w") as bash:
-						bash.write(fullbash)
+				bash.write(fullbash)
 			os.system("qsub {0}".format(bashname))
 
 			#Add sample to list of annotated samples
@@ -329,8 +330,7 @@ with open(os.path.join(pipeline_path, "dirlist.txt")) as dirlist:
 #initialize a log file of all the modules that have been used.
 if log == "true":
 	modulesusedlog_fname = "{0}/Logs/modules_used_{1}.txt".format(output_path, time)
-	with open(modulesusedlog_fname, "w") as f:
-		pass
+	shutil.copy2(args.ini, modulesusedlog_fname)
 
 #Standard arguments for the scripts.
 std_arguments = "--FILELIST {0} --OUTPUT_PATH {1}".format(filelist, output_path)

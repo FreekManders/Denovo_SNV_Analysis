@@ -329,8 +329,7 @@ snv_gene_table_pos = GRanges(seqnames = snv_gene_table$seqnames,
 ###Either supply celltypes manually or use all celltypes in the folder
 if (cell_typesPCHiC == "All"){
 	cell_typesPCHiC = list.files(pchic_folder, ".txt") %>% gsub("PCHiC_", "", .) %>% gsub(".txt", "", .)
-}
-else {
+} else {
 	cell_typesPCHiC = strsplit(cell_typesPCHiC, ",")[[1]]
 }
 

@@ -255,18 +255,18 @@ NrMendelViols = counttable
 NrMendelViols$Run = as.factor(NrMendelViols$Folder)
 levels(NrMendelViols$Run) = paste("Run: ", 1:length(levels(NrMendelViols$Run)), sep = "")
 
-NrMendelViols2 = NrMendelViols %>% select(Sample, Run, iapviols, callableviols, fullgtviols, snvviols, snvviolstrue) %>% melt(id = c("Sample", "Run"))
-levels(NrMendelViols2$variable) = c("IAP", "Callable regions", "Full GT", "SNV", "True denovo SNV")
+NrMendelViols2 = NrMendelViols %>% select(Sample, Run, callableviols, fullgtviols, snvviols, snvviolstrue) %>% melt(id = c("Sample", "Run"))
+levels(NrMendelViols2$variable) = c("Raw mutations", "Full GT", "SNV", "True denovo SNV")
 NrMendelViols2$value[NrMendelViols2$value == 0] = 1
 overview_fig = ggplot(NrMendelViols2, aes(y = value, x = Sample, fill = variable)) + 
   geom_bar(stat = "identity", position = "dodge") + 
   facet_grid(. ~ Run, scales = "free", space = "free") + 
   scale_y_log10() + 
   theme_bw() + 
-  labs(y = "Mendelian violations", x = "Sample", title = "Mendelian violations") + 
+  labs(y = "Nr of denovo mutations", x = "Sample", title = "Denovo mutations") + 
   coord_cartesian(ylim = c(10, 100000), expand = F) + 
   theme(axis.text.x = element_text(angle = 80, size = 10, margin = margin(t = 25)), legend.position = "bottom", panel.grid.major.x = element_blank(), text = element_text(size=20)) + 
-  scale_fill_discrete(name = "Regions")
+  scale_fill_discrete(name = "Filtering step")
 
 NrMendelViols2_5 = NrMendelViols %>% select(Sample, Run, snvviolstrue, pathos_freqf, pathos_freq_chromfunc_f) %>% melt(id = c("Sample", "Run"))
 levels(NrMendelViols2_5$variable) = c("True denovo SNV", "Filtered on gnomAD, PONN and GoNL", "Filtered out inactive sites")
@@ -275,10 +275,10 @@ prioritize_fig = ggplot(NrMendelViols2_5, aes(y = value, x = Sample, fill = vari
   geom_bar(stat = "identity", position = "dodge") + 
   facet_grid(. ~ Run, scales = "free", space = "free") + 
   theme_bw() + 
-  labs(y = "Mendelian violations", x = "Sample", title = "Mendelian violations") + 
+  labs(y = "Nr of denovo SNVs", x = "Sample", title = "Denovo SNVs") + 
   coord_cartesian(ylim = c(0, maxy2_5), expand = F) + 
   theme(axis.text.x = element_text(angle = 80, size = 10, margin = margin(t = 25)), legend.position = "bottom", panel.grid.major.x = element_blank(), text = element_text(size=20)) + 
-  scale_fill_discrete(name = "Regions")
+  scale_fill_discrete(name = "Filtering step")
 
 NrMendelViols3 = NrMendelViols %>% select(Sample, Run, sitesbefore, sitesafter) %>% melt(id = c("Sample", "Run"))
 levels(NrMendelViols3$variable) = c("All regions", "Callable regions")
