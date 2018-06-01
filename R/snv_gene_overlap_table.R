@@ -438,7 +438,7 @@ possPathogenicTableReport = possPathogenic %>%  dplyr::select(seqnames, start, R
 write.table(possPathogenic, "Possibly_pathogenic/SNVs/Near_gene/possibly_pathogenic_interestingcollumns.txt", quote = F, row.names = F, sep = "\t")
 
 ###For exonic variants
-possPathogenicExonic = snv_gene_table %>% dplyr::filter(exonic == "Exonic" & same_gene & as.numeric(phenoMatchScore) > 0 & Effects_exonic != "synonymous_variant")
+possPathogenicExonic = snv_gene_table %>% dplyr::filter(exonic == "Exonic" & same_gene & as.numeric(phenoMatchScore) > 10 & Effects_exonic != "synonymous_variant")
 
 #Perform local p-adjustment. Look at pvalues for genes linked with a snv, that passed deseq2 independent filtering.
 possPathogenicExonic$pvalue2 = possPathogenicExonic$pvalue

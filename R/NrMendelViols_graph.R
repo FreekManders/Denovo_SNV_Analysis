@@ -256,7 +256,7 @@ NrMendelViols$Run = as.factor(NrMendelViols$Folder)
 levels(NrMendelViols$Run) = paste("Run: ", 1:length(levels(NrMendelViols$Run)), sep = "")
 
 NrMendelViols2 = NrMendelViols %>% select(Sample, Run, callableviols, fullgtviols, snvviols, snvviolstrue) %>% melt(id = c("Sample", "Run"))
-levels(NrMendelViols2$variable) = c("Raw mutations", "Full GT", "SNV", "True denovo SNV")
+levels(NrMendelViols2$variable) = c("Raw mutations", "Full GT", "SNV", "High confidence SNV")
 NrMendelViols2$value[NrMendelViols2$value == 0] = 1
 overview_fig = ggplot(NrMendelViols2, aes(y = value, x = Sample, fill = variable)) + 
   geom_bar(stat = "identity", position = "dodge") + 
@@ -265,7 +265,7 @@ overview_fig = ggplot(NrMendelViols2, aes(y = value, x = Sample, fill = variable
   theme_bw() + 
   labs(y = "Nr of denovo mutations", x = "Sample", title = "Denovo mutations") + 
   coord_cartesian(ylim = c(10, 100000), expand = F) + 
-  theme(axis.text.x = element_text(angle = 80, size = 10, margin = margin(t = 25)), legend.position = "bottom", panel.grid.major.x = element_blank(), text = element_text(size=20)) + 
+  theme(axis.text.x = element_text(angle = 80, size = 15, margin = margin(t = 38)), legend.position = "bottom", panel.grid.major.x = element_blank(), text = element_text(size=20)) + 
   scale_fill_discrete(name = "Filtering step")
 
 NrMendelViols2_5 = NrMendelViols %>% select(Sample, Run, snvviolstrue, pathos_freqf, pathos_freq_chromfunc_f) %>% melt(id = c("Sample", "Run"))
@@ -277,7 +277,7 @@ prioritize_fig = ggplot(NrMendelViols2_5, aes(y = value, x = Sample, fill = vari
   theme_bw() + 
   labs(y = "Nr of denovo SNVs", x = "Sample", title = "Denovo SNVs") + 
   coord_cartesian(ylim = c(0, maxy2_5), expand = F) + 
-  theme(axis.text.x = element_text(angle = 80, size = 10, margin = margin(t = 25)), legend.position = "bottom", panel.grid.major.x = element_blank(), text = element_text(size=20)) + 
+  theme(axis.text.x = element_text(angle = 80, size = 15, margin = margin(t = 38)), legend.position = "bottom", panel.grid.major.x = element_blank(), text = element_text(size=20)) + 
   scale_fill_discrete(name = "Filtering step")
 
 NrMendelViols3 = NrMendelViols %>% select(Sample, Run, sitesbefore, sitesafter) %>% melt(id = c("Sample", "Run"))
@@ -289,7 +289,7 @@ callsites_fig = ggplot(NrMendelViols3, aes(y = value, x = Sample, fill = variabl
   theme_bw() + 
   labs(y = "Sites", x = "Sample", title = "Number of sites in unfiltered/filtered vcfs") + 
   coord_cartesian(ylim = c(0, maxy3), expand = F) + 
-  theme(axis.text.x = element_text(angle = 80, size = 10, margin = margin(t = 25)), panel.grid.major.x = element_blank(), text = element_text(size=20)) + 
+  theme(axis.text.x = element_text(angle = 80, size = 15, margin = margin(t = 38)), panel.grid.major.x = element_blank(), text = element_text(size=20)) + 
   scale_fill_discrete(name = "Regions")
 
 if (comparePrior == "true"){
@@ -302,7 +302,7 @@ if (comparePrior == "true"){
     theme_bw() + 
     labs(y = "Nr of denovo SNVs", x = "Sample", title = "Number of denovo snvs with different priors") + 
     coord_cartesian(ylim = c(0, maxy4), expand = F) + 
-    theme(axis.text.x = element_text(angle = 80, size = 10, margin = margin(t = 25)), panel.grid.major.x = element_blank(), text = element_text(size=20)) + 
+    theme(axis.text.x = element_text(angle = 80, size = 15, margin = margin(t = 38)), panel.grid.major.x = element_blank(), text = element_text(size=20)) + 
     scale_fill_discrete(name = "Prior")
   
   NrMendelViols5 = NrMendelViols %>% select(Run, Sample, snvviolstrue, snvviolstruedefaultprior) %>% melt(id = c("Sample", "Run"))
@@ -314,7 +314,7 @@ if (comparePrior == "true"){
     theme_bw() + 
     labs(y = "Nr of denovo SNVs", x = "Sample", title = "Number of denovo snvs with different priors after filtering") + 
     coord_cartesian(ylim = c(0, maxy5), expand = F) + 
-    theme(axis.text.x = element_text(angle = 80, size = 10, margin = margin(t = 25)), panel.grid.major.x = element_blank(), text = element_text(size=20)) + 
+    theme(axis.text.x = element_text(angle = 80, size = 15, margin = margin(t = 38)), panel.grid.major.x = element_blank(), text = element_text(size=20)) + 
     scale_fill_discrete(name = "Prior")
 }
 
