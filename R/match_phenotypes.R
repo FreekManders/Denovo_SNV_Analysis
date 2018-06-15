@@ -96,9 +96,9 @@ write_phenotypes = function(fname_excel, fname_filelist, output_path, plot, extr
     
     #Put the occurences in a df and create formatted names
     phenotype_overview = data.frame("type" = names(counts), "counts" = counts, row.names = NULL)
-    phenotype_overview$category = ifelse(grepl("Nervous_system", phenotype_overview$type), "Abnormality\nof the\n nervous system", "Abnormality of ...")
+    phenotype_overview$category = ifelse(grepl("Nervous_system", phenotype_overview$type), "Abnormality\nof the\n nervous system", "Abnormality of the:")
     phenotype_overview$category = ifelse(grepl("Male|Female", phenotype_overview$type), "Sex", phenotype_overview$category)
-    phenotype_overview$category = factor(phenotype_overview$category, levels = c("Sex", "Abnormality\nof the\n nervous system", "Abnormality of ..."))
+    phenotype_overview$category = factor(phenotype_overview$category, levels = c("Sex", "Abnormality\nof the\n nervous system", "Abnormality of the:"))
     
     phenotype_overview$typename = gsub("Nervous_system:|Abnormality.of.", "", phenotype_overview$type)
     phenotype_overview$typename = gsub("the.", "", phenotype_overview$typename)

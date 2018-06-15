@@ -260,36 +260,36 @@ levels(NrMendelViols2$variable) = c("Raw mutations", "Full GT", "SNV", "High con
 NrMendelViols2$value[NrMendelViols2$value == 0] = 1
 overview_fig = ggplot(NrMendelViols2, aes(y = value, x = Sample, fill = variable)) + 
   geom_bar(stat = "identity", position = "dodge") + 
-  facet_grid(. ~ Run, scales = "free", space = "free") + 
+  #facet_grid(. ~ Run, scales = "free", space = "free") + 
   scale_y_log10() + 
   theme_bw() + 
-  labs(y = "Nr of denovo mutations", x = "Sample", title = "Denovo mutations") + 
+  labs(y = "Nr of de novo mutations", x = "Sample", title = "De novo mutations") + 
   coord_cartesian(ylim = c(10, 100000), expand = F) + 
   theme(axis.text.x = element_text(angle = 80, size = 15, margin = margin(t = 38)), legend.position = "bottom", panel.grid.major.x = element_blank(), text = element_text(size=20)) + 
   scale_fill_discrete(name = "Filtering step")
 
 NrMendelViols2_5 = NrMendelViols %>% select(Sample, Run, snvviolstrue, pathos_freqf, pathos_freq_chromfunc_f) %>% melt(id = c("Sample", "Run"))
-levels(NrMendelViols2_5$variable) = c("True denovo SNV", "Filtered on gnomAD, PONN and GoNL", "Filtered out inactive sites")
+levels(NrMendelViols2_5$variable) = c("High confidence SNV", "Filtered on gnomAD, PONN and GoNL", "Filtered out inactive sites")
 maxy2_5 = 1.1 * max(NrMendelViols2_5$value)
 prioritize_fig = ggplot(NrMendelViols2_5, aes(y = value, x = Sample, fill = variable)) + 
   geom_bar(stat = "identity", position = "dodge") + 
-  facet_grid(. ~ Run, scales = "free", space = "free") + 
+  #facet_grid(. ~ Run, scales = "free", space = "free") + 
   theme_bw() + 
-  labs(y = "Nr of denovo SNVs", x = "Sample", title = "Denovo SNVs") + 
+  labs(y = "Nr of de novo SNVs", x = "Sample", title = "De novo SNVs") + 
   coord_cartesian(ylim = c(0, maxy2_5), expand = F) + 
   theme(axis.text.x = element_text(angle = 80, size = 15, margin = margin(t = 38)), legend.position = "bottom", panel.grid.major.x = element_blank(), text = element_text(size=20)) + 
   scale_fill_discrete(name = "Filtering step")
 
-NrMendelViols3 = NrMendelViols %>% select(Sample, Run, sitesbefore, sitesafter) %>% melt(id = c("Sample", "Run"))
+NrMendelViols3 = NrMendelViols %>% select("Family", Run, sitesbefore, sitesafter) %>% melt(id = c("Family", "Run"))
 levels(NrMendelViols3$variable) = c("All regions", "Callable regions")
 maxy3 = 1.1 * max(NrMendelViols3$value)
-callsites_fig = ggplot(NrMendelViols3, aes(y = value, x = Sample, fill = variable)) + 
+callsites_fig = ggplot(NrMendelViols3, aes(y = value, x = Family, fill = variable)) + 
   geom_bar(stat = "identity", position = "dodge") + 
-  facet_grid(. ~ Run, scales = "free", space = "free") + 
+  #facet_grid(. ~ Run, scales = "free", space = "free") + 
   theme_bw() + 
-  labs(y = "Sites", x = "Sample", title = "Number of sites in unfiltered/filtered vcfs") + 
+  labs(y = "Nr of variants", x = "Family", title = "Number of sites in unfiltered/filtered vcfs") + 
   coord_cartesian(ylim = c(0, maxy3), expand = F) + 
-  theme(axis.text.x = element_text(angle = 80, size = 15, margin = margin(t = 38)), panel.grid.major.x = element_blank(), text = element_text(size=20)) + 
+  theme(axis.text.x = element_text(angle = 90, size = 15, margin = margin(t = 5)), panel.grid.major.x = element_blank(), text = element_text(size=20)) + 
   scale_fill_discrete(name = "Regions")
 
 if (comparePrior == "true"){
@@ -298,9 +298,9 @@ if (comparePrior == "true"){
   maxy4 = 1.1 * max(NrMendelViols4$value)
   prior_fig = ggplot(NrMendelViols4, aes(y = value, x = Sample, fill = variable)) + 
     geom_bar(stat = "identity", position = "dodge") + 
-    facet_grid(. ~ Run, scales = "free", space = "free") + 
+    #facet_grid(. ~ Run, scales = "free", space = "free") + 
     theme_bw() + 
-    labs(y = "Nr of denovo SNVs", x = "Sample", title = "Number of denovo snvs with different priors") + 
+    labs(y = "Nr of de novo SNVs", x = "Sample", title = "Number of de novo snvs with different priors") + 
     coord_cartesian(ylim = c(0, maxy4), expand = F) + 
     theme(axis.text.x = element_text(angle = 80, size = 15, margin = margin(t = 38)), panel.grid.major.x = element_blank(), text = element_text(size=20)) + 
     scale_fill_discrete(name = "Prior")
@@ -310,9 +310,9 @@ if (comparePrior == "true"){
   maxy5 = 1.1 * max(NrMendelViols5$value)
   prior_f_fig = ggplot(NrMendelViols5, aes(y = value, x = Sample, fill = variable)) + 
     geom_bar(stat = "identity", position = "dodge") + 
-    facet_grid(. ~ Run, scales = "free", space = "free") + 
+    #facet_grid(. ~ Run, scales = "free", space = "free") + 
     theme_bw() + 
-    labs(y = "Nr of denovo SNVs", x = "Sample", title = "Number of denovo snvs with different priors after filtering") + 
+    labs(y = "Nr of de novo SNVs", x = "Sample", title = "Number of de novo snvs with different priors after filtering") + 
     coord_cartesian(ylim = c(0, maxy5), expand = F) + 
     theme(axis.text.x = element_text(angle = 80, size = 15, margin = margin(t = 38)), panel.grid.major.x = element_blank(), text = element_text(size=20)) + 
     scale_fill_discrete(name = "Prior")

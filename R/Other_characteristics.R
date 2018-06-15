@@ -158,7 +158,7 @@ mutsbyage = function(parent){
     geom_point(color = "red") + 
     geom_smooth(method = "lm") +
     coord_cartesian(ylim = ylims, xlim = xlims) +
-    labs(title = mytitle, x = "Age", y = "Nr. Denovo SNVs") +
+    labs(title = mytitle, x = "Age", y = "Nr of de novo SNVs") +
     theme_bw() +
     annotate("text", x = text.x, y = text.y, label = paste0("p: ", pval, "\nR^2: ", rsq, "\ny = ", a, " +/- ", stderrora, " x", " + ", b, " +/- ", stderrorb), size = 5, hjust = 0) +
     theme(text = element_text(size=20))
@@ -199,7 +199,7 @@ phasedmutsbyagefig = ggplot(snvcounts2, aes(x = age, y = count, fill = Parent, c
   scale_fill_manual(values = c("Father" = "grey", "Mother" = "grey")) +
   scale_color_discrete(l = 40) +
   theme_bw() +
-  labs(y = "Nr. of phased denovo snvs", x = "age", title = "Effect of age parents on denovo snvs") +
+  labs(y = "Nr. of phased de novo snvs", x = "age", title = "Effect of age parents on denovo snvs") +
   annotate("text", x = text.x, y = text.y, size = 4, label = paste0("Father:  p: ", stats$pval[1], "  R^2 = ", stats$rsq[1], "   y = ", stats$a[1], " +/- ", stats$stderrora[1], " x + ", stats$b[1], " +/- ", stats$stderrorb[1], "\nMother:  p: ", stats$pval[2], "  R^2 = ", stats$rsq[2], "   y = ", stats$a[2], " +/- ", stats$stderrora[2], " x + ", stats$b[2], " +/- ", stats$stderrorb[2])) +
   theme(text = element_text(size = 20))
 

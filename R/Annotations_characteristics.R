@@ -255,17 +255,27 @@ optimal.col.ddg = as.dendrogram(optimal.col)
 
 regbuildvschromhmm = Heatmap(cooccur2, col = colorRamp2(seq(0,4,0.4),rev(brewer.pal(11, "RdBu"))), column_dend_reorder = F,
               cluster_columns = as.dendrogram(optimal.col.ddg), cluster_rows = as.dendrogram(optimal.ddg), na_col = "grey",
-              row_names_side = "left", column_names_side = "top", show_row_names = T, show_column_names = T, column_title = paste(title, "\nChromHMM", sep = ""), row_title = "Regbuild",
+              row_names_side = "left", column_names_side = "top", show_row_names = T, show_column_names = T, column_title = paste(title, "\nEpigenomics Roadmap", sep = ""), row_title = "Ensembl regulatory build",
               heatmap_legend_param = list(color_bar = "continuous", legend_direction = "horizontal", legend_width = unit(4, "cm"), title_position = "topcenter"),
-              name = "Log10(Regbuild vs ChromHMM)", row_names_gp = gpar(fontsize = 14), column_names_gp = gpar(fontsize = 14))
+              name = "Log10(Regbuild vs ChromHMM)", row_names_gp = gpar(fontsize = 18), column_names_gp = gpar(fontsize = 18))
 
 cooccur3 = cooccur / rowSums(cooccur)
 regbuildvschromhmmrel = Heatmap(cooccur3, col = colorRamp2(seq(0,0.7,0.07),rev(brewer.pal(11, "RdBu"))), column_dend_reorder = F,
               cluster_columns = as.dendrogram(optimal.col.ddg), cluster_rows = as.dendrogram(optimal.ddg), na_col = "grey",
-              row_names_side = "left", column_names_side = "top", show_row_names = T, show_column_names = T, column_title = paste(title, " relative\nChromHMM", sep = ""), row_title = "Regbuild",
+              row_names_side = "left", column_names_side = "top", show_row_names = T, show_column_names = T, column_title = paste(title, " relative\nEpigenomics Roadmap", sep = ""), row_title = "Ensembl regulatory build",
               heatmap_legend_param = list(color_bar = "continuous", legend_direction = "horizontal", legend_width = unit(4, "cm"), title_position = "topcenter"),
-              name = "Fraction of regbuild", row_names_gp = gpar(fontsize = 14), column_names_gp = gpar(fontsize = 14))
-return(c(regbuildvschromhmm, regbuildvschromhmmrel))
+              name = "Fraction of regbuild", row_names_gp = gpar(fontsize = 18), column_names_gp = gpar(fontsize = 18))
+
+cooccur4 = apply(cooccur, 2, function(x) x/sum(x))/rowSums(cooccur)*sum(cooccur) #Divide by row and col sums and then multiply by total counts to find enrichment.
+cooccur4 = log2(cooccur4)
+cooccur4[is.infinite(cooccur4)] = NA
+regbuildvschromhmmenrich = Heatmap(cooccur4, col = colorRamp2(seq(-6,6,1.2),rev(brewer.pal(11, "RdBu"))), column_dend_reorder = F,
+                                cluster_columns = as.dendrogram(optimal.col.ddg), cluster_rows = as.dendrogram(optimal.ddg), na_col = "grey",
+                                row_names_side = "left", column_names_side = "top", show_row_names = T, show_column_names = T, column_title = paste(title, " relative\nEpigenomics Roadmap", sep = ""), row_title = "Ensembl regulatory build",
+                                heatmap_legend_param = list(color_bar = "continuous", legend_direction = "horizontal", legend_width = unit(4, "cm"), title_position = "topcenter", at = c(-6, -3, 0, 3, 6)),
+                                name = "Enrichment (log2)", row_names_gp = gpar(fontsize = 18), column_names_gp = gpar(fontsize = 18))
+
+return(c(regbuildvschromhmm, regbuildvschromhmmrel, regbuildvschromhmmenrich))
 }
 
 cooccur = vcfs %>% dplyr::select("Sample", "Run", "regbuild", chromhmms) %>% melt(id = c("Sample", "Run", "regbuild"), value.name = "Chromatin_state", variable.name = "Celltype_or_tissue") %>% group_by(regbuild, Chromatin_state) %>% dplyr::summarise(count = n())
@@ -284,8 +294,10 @@ mutsbystate
 mutsbystateandbuild
 figscooccur[[1]]
 figscooccur[[2]]
+figscooccur[[3]]
 figscooccurmajor[[1]]
 figscooccurmajor[[2]]
+figscooccurmajor[[3]]
 dev.off()
 
 ####_______________Phastcons________________________________________________________####

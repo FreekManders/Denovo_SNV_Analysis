@@ -48,7 +48,7 @@ tpfig = ggplot(carta, aes(x = IGVcheck)) +
   labs(x = "True or False positive", y = "Nr. of denovo SNVs", title = "True and false positives from cartagenia") + 
   coord_cartesian(ylim = c(0, 60), expand = F) + 
   theme_bw() +
-  theme(panel.grid.major.x = element_blank())
+  theme(panel.grid.major.x = element_blank(), text = element_text(size = 20))
 
 
 cartatrue = carta %>% filter(IGVcheck == "True")
@@ -63,7 +63,7 @@ muttypefig = ggplot(data = mutationtypes, aes(x = Mutationtype, y = Counts, fill
   theme_bw() +
   coord_cartesian(ylim = c(0, maxy), expand = F) +
   labs(x = "Type of mutation", y = "Nr. of denovo SNVs", title = "Type of exonic mutation in Cartagenia") +
-  theme(panel.grid.major.x = element_blank())
+  theme(panel.grid.major.x = element_blank(), text = element_text(size = 20))
 
 
 nrsamples = length(cartafams)
@@ -82,7 +82,7 @@ mutsbyfamfig = ggplot(tpbyfam, aes(x = family, y = Nrmuts)) +
   coord_cartesian(ylim = c(0, 5), expand = F) +
   labs(x = "Family", y = "True positives", title = "True positives per sample in cartagenia") +
   annotate("text", x = 9, y = 4.5, label = paste("Average number of true positives per sample: ", avgtrue, sep = "")) +
-  theme(panel.grid.major.x = element_blank())
+  theme(panel.grid.major.x = element_blank(), text = element_text(size = 20))
 
 pdf(paste0(opt$OUTPUT_PATH, "/Characteristics_denovo/Myfiltervscartagenia/Cartagenia_exon.pdf"))
 tpfig
@@ -114,6 +114,7 @@ vcfs$Exoniclabel = ifelse(vcfs$exonic, "Exonic", "nonExonic")
 exonic = vcfs %>% filter(exonic)
 exonic2 = exonic %>% filter(family %in% cartafams) %>% dplyr::select(chrom, start, Effects, Sample, family)
 
+write.table(exonic, paste0(opt$OUTPUT_PATH, "/Characteristics_denovo/Myfiltervscartagenia/All_Exonic_SNVs.txt"), quote = F, row.names = F, sep = "\t")
 
 ####____________________Compare exonic snvs with cartagenia___________________________________####
 #My exonic trudenovos have been filtered in igv. This removed only 4 sites.
@@ -121,16 +122,16 @@ nrshared = inner_join(exonic2, carta, by = c("family" = "family", "chrom" = "Chr
 nrsharedtrue = inner_join(exonic2, cartatrue, by = c("family" = "family", "chrom" = "Chromosome", "start" = "Start")) %>% nrow()
 
 pdf(paste0(opt$OUTPUT_PATH, "/Characteristics_denovo/Myfiltervscartagenia/CartageniasharedTPs.pdf"))
-vennshared = draw.pairwise.venn(nrow(exonic2), nrow(carta), nrshared, category = c("WGS custom filter","Cartagenia"),inverted = F, ext.text = T, fill = c("darkred","skyblue"), alpha = c(0.8,0.95), cat.pos = c(180,180), cat.cex = c(2,2), cex = c(3,3,3), ind = F)
+vennshared = draw.pairwise.venn(nrow(exonic2), nrow(carta), nrshared, category = c("WGS custom filter","Alissa Interpret"),inverted = F, ext.text = T, fill = c("darkred","skyblue"), alpha = c(0.8,0.95), cat.pos = c(180,180), cat.cex = c(2,2), cex = c(3,3,3), ind = F)
 grid.arrange(gTree(children=vennshared), top="Shared denovo SNVs with all cartagenia snvs")
-vennsharetrue = draw.pairwise.venn(nrow(exonic2), nrow(cartatrue), nrsharedtrue, category = c("WGS custom filter","Cartagenia true positive"),inverted = F, ext.text = T, fill = c("darkred","skyblue"), alpha = c(0.8,0.95), cat.pos = c(0,0), cat.cex = c(2,2), cex = c(3,3,3), ind = F)
-grid.arrange(gTree(children=vennsharetrue), top="Shared denovo SNVs with cartagenia true positives")
+vennsharetrue = draw.pairwise.venn(nrow(exonic2), nrow(cartatrue), nrsharedtrue, category = c("WGS custom filter","Alissa Interpret"),inverted = F, ext.text = T, fill = c("darkred","skyblue"), alpha = c(0.8,0.95), cat.pos = c(0,0), cat.cex = c(2,2), cex = c(3,3,3), ind = F)
+grid.arrange(gTree(children=vennsharetrue), top="Shared denovo SNVs with Alissa Interpret true positives")
 dev.off()
 
 missedbyme = anti_join(cartatrue, exonic2, by = c("family" = "family", "Chromosome" = "chrom", "Start" = "start"))
-write.table(missedbyme, paste0(opt$OUTPUT_PATH, "/Characteristics_denovo/Myfiltervscartagenia/TPsmissedbyme.txt"), quote = F, row.names = F, col.names = T)
+write.table(missedbyme, paste0(opt$OUTPUT_PATH, "/Characteristics_denovo/Myfiltervscartagenia/TPsmissedbyme.txt"), quote = F, row.names = F, sep = "\t")
 missedbycarta = anti_join(exonic2, cartatrue, by = c("family" = "family", "chrom" = "Chromosome", "start" = "Start"))
-write.table(missedbycarta, paste0(opt$OUTPUT_PATH, "/Characteristics_denovo/Myfiltervscartagenia/TPsmissedbycarta.txt"), quote = F, row.names = F, col.names = T)
+write.table(missedbycarta, paste0(opt$OUTPUT_PATH, "/Characteristics_denovo/Myfiltervscartagenia/TPsmissedbycarta.txt"), quote = F, row.names = F, sep = "\t")
 
 ####____________________Characteristics of the true denovo exonic snvs________________________####
 nrsyn = grep("synonymous", exonic$Effects) %>% length(.)
@@ -143,8 +144,8 @@ muttypefig = ggplot(data = mutationtypes, aes(x = Mutationtype, y = Counts, fill
   geom_bar(stat = "identity") +
   theme_bw() +
   coord_cartesian(ylim = c(0, maxy), expand = F) +
-  labs(x = "Type of mutation", y = "Nr of denovo SNVs", title = "Type of exonic mutation in WGS") +
-  theme(panel.grid.major.x = element_blank())
+  labs(x = "Type of mutation", y = "Nr of de novo SNVs", title = "Type of exonic mutation in WGS") +
+  theme(panel.grid.major.x = element_blank(), text = element_text(size = 20))
 
 
 
@@ -163,7 +164,7 @@ mutsbysfig = ggplot(mutsbys, aes(x = Sample, y = ExonicMuts)) +
   coord_cartesian(ylim = c(0, 4), expand = F) +
   labs(x = "Family", y = "True positives", title = "True positives per sample in WGS") +
   annotate("text", x = 9, y = 3.75, label = paste("Average number of true positives per sample: ", avgtrue, sep = "")) +
-  theme(panel.grid.major.x = element_blank())
+  theme(panel.grid.major.x = element_blank(), text = element_text(size = 20))
 
 
 pdf(paste0(opt$OUTPUT_PATH, "/Characteristics_denovo/Myfiltervscartagenia/WGS_exon.pdf"))

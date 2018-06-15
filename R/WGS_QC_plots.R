@@ -113,7 +113,7 @@ MeanCovFig = ggplot(qctable, aes(x = Sample, y = MEAN_COVERAGE, fill = family)) 
   theme_bw() + 
   labs(x = "Sample", y = "Mean coverage +/- SD") + 
   coord_cartesian(ylim = c(0, maxyfig1), expand = F) + 
-  theme(axis.text.x = element_text(angle = 80, size = 6, margin = margin(t = 20))) + 
+  theme(axis.text.x = element_text(angle = 90, size = 7, margin = margin(t = 5)),  text = element_text(size=20)) + 
   guides(fill=guide_legend("Family")) +
   scale_fill_manual(values = colors)
 
@@ -123,7 +123,7 @@ NrReadsFig = ggplot(qctable2, aes(x = Sample, y = nrreads, fill = Legend)) +
   theme_bw() + 
   labs(y = "Number of reads", x = "Sample") + 
   coord_cartesian(ylim = c(0, maxyfig2), expand = F) + 
-  theme(axis.text.x = element_text(angle = 80, size = 6, margin = margin(t = 20)))
+  theme(axis.text.x = element_text(angle = 90, size = 7, margin = margin(t = 5)),  text = element_text(size=20))
 
 nrcolors = length(unique(qctable3$Sample))
 set.seed(001)
@@ -133,7 +133,7 @@ MinReadCovFig = ggplot(qctable3, aes(x = Xaxis, y=Coverage, color = Sample)) +
   labs(x = "Minimal read coverage", y = "% of genome") + 
   theme_bw() + 
   coord_cartesian(ylim = c(0,100), xlim = c(0,100), expand = F) + 
-  theme(legend.text=element_text(size=6)) + 
+  theme(legend.text=element_text(size=7), text = element_text(size=20)) + 
   guides(color=guide_legend(title="Sample")) +
   scale_color_manual(values = colors)
 
@@ -143,10 +143,10 @@ ReadExclusionFig = ggplot(qctable4, aes(x = Sample, y = nrexcluded, fill = Legen
   theme_bw() + 
   labs(x = "Sample", y = "% reads excluded") + 
   coord_cartesian(ylim = c(0, maxyfig4), expand = F) + 
-  theme(axis.text.x = element_text(angle = 80, size = 6, margin = margin(t = 20))) + 
+  theme(axis.text.x = element_text(angle = 90, size = 7, margin = margin(t = 5)),  text = element_text(size=20)) + 
   guides(fill=guide_legend("Exclusion filter"))
 
-pdf(outpdf, paper = "a4")
+pdf(outpdf, width = 12)
 MeanCovFig
 NrReadsFig
 MinReadCovFig

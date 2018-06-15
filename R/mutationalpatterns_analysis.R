@@ -60,7 +60,7 @@ runmutpatterns = function(vcfs, factors, name){
   plot_cosmics = function(mut_mat, combined){
     #Look at the similarity between mutational spectra and cosmic signatures
     cos_sim_samples_signatures = cos_sim_matrix(mut_mat, cancer_signatures)
-    svssigfig = plot_cosine_heatmap(cos_sim_samples_signatures, col_order = cosmic_order, cluster_rows = T)
+    svssigfig = plot_cosine_heatmap(cos_sim_samples_signatures, col_order = cosmic_order, cluster_rows = F)
   
     #Look at contribution of cosmic signatures to mutational spectra
     fit_res = fit_to_signatures(mut_mat, cancer_signatures)
@@ -74,7 +74,7 @@ runmutpatterns = function(vcfs, factors, name){
     sigcontrifig1 = plot_contribution(fit_res$contribution[select,,drop = F], cancer_signatures[,select], coord_flip = F, mode = "absolute") +
       coord_cartesian(ylim = c(0, maxy), expand = F) +
       theme(axis.text.x = element_text(angle = 85, size = 10, margin = margin(t = 26)))
-    sigcontrifig2 = plot_contribution_heatmap(fit_res$contribution, cluster_samples = T, method = "complete")
+    sigcontrifig2 = plot_contribution_heatmap(fit_res$contribution, cluster_samples = F, method = "complete")
     
     #Look at similarity between the reconstructed spectra (based on the cosmic signatures) and the original spectra
     cos_sim_ori_rec = cos_sim_matrix(mut_mat, fit_res$reconstructed)
