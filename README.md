@@ -79,7 +79,7 @@ This pipeline is designed to run on a Sun Grid Engine system. To run the pipelin
 #### Datasets used when running the pipeline. Some of these may require some pre-processing
 - [DANN scores](https://cbcl.ics.uci.edu/public_data/DANN/)
 - [gnomAD](http://gnomad.broadinstitute.org/)
-- [HMF-PON](https://www.hartwigmedicalfoundation.nl/) (Contact the HMF for acces to the data)
+- [HMF-PON >= 2.0](https://www.hartwigmedicalfoundation.nl/) (Contact the HMF for acces to the data)
 - [ROADMAP 15-state model](https://egg2.wustl.edu/roadmap/web_portal/chr_state_learning.html) (Download the coreMarks mnemonics.bed files for samples: E029, E070, E071, E081 and E082)
 - [Ensembl Regulatory Builld](https://grch37.ensembl.org/index.html) (Download with biomart as: Ensembl Regulation: Human Regulatory Features. Tested on version 92. Make sure to download the version for GRCh37)
 - [phastCons46way](http://hgdownload.cse.ucsc.edu/goldenPath/hg19/phastCons46way/vertebrate/) (Download the .wigFix.gz files)

@@ -224,14 +224,17 @@ if (plot == "true"){
     geom_bar(stat = "identity") +
     coord_cartesian(ylim = c(0, 1.1 * max(snv_gene_counts$counts))) +
     labs(x = "", y = "nr. of snv gene combinations", title = "snv gene combinations") +
+    scale_fill_discrete(l = 30) +
     theme_bw() +
-    scale_fill_discrete(l = 30)
+    theme(text = element_text(size = 20))
   
-  phenomatch_fig = ggplot(data = snv_gene_hpo, aes(y = phenoMatchScore, x = "")) + 
+  snv_gene_hpo_withscore = snv_gene_hpo %>% dplyr::filter(phenoMatchScore != 0)
+  phenomatch_fig = ggplot(data = snv_gene_hpo_withscore, aes(y = phenoMatchScore, x = "")) + 
     geom_boxplot(outlier.shape = NA) +
     geom_dotplot(stackdir = "center", binaxis = "y", position = "dodge", binwidth = 1, binpositions = "all", dotsize = 0.8, stackratio = 0.8) +
-    labs(x = "All samples", title = "Phenomatch scores of all combinations") +
-    theme_bw()
+    labs(x = "All samples", title = "Phenomatch scores of combinations with a score", y = "phenomatch score") +
+    theme_bw() +
+    theme(text = element_text(size = 20), axis.text.x = element_text(margin = margin(t = -10)))
   
   pdf("Possibly_pathogenic/SNVs/Near_gene/snv_gene_characteristics.pdf")
   print(snv_gene_counts_fig)
@@ -268,18 +271,21 @@ if (plot == "true"){
     scale_x_discrete(limits = c("Autosomal recessive", "Autosomal dominant", "Both")) +
     theme_bw() +
     scale_fill_discrete(l = 30) +
-    labs(x = "Mode of inheritance", y = "Nr of genes", title = "Inheritance of genes (with hpo terms)")
+    labs(x = "Mode of inheritance", y = "Nr of genes", title = "Inheritance of genes (with hpo terms)") +
+    theme(text = element_text(size = 20))
   
   inh_HI_fig = ggplot(data = snv_gene_hpo, aes(x = dominant, y = HI)) +
     geom_boxplot(outlier.shape = NA) +
     geom_dotplot(stackdir = "center", binaxis = "y", position = "dodge", binwidth = 1, binpositions = "all", dotsize = 0.8, stackratio = 0.8) +
     labs(x = "HPO inheritance", title = "HI versus inheritance HPO") +
-    theme_bw()
+    theme_bw() +
+    theme(text = element_text(size = 20))
   inh_pLI_fig = ggplot(data = snv_gene_hpo, aes(x = dominant, y = pLI)) +
     geom_boxplot(outlier.shape = NA) +
     geom_dotplot(stackdir = "center", binaxis = "y", position = "dodge", binwidth = 0.005, binpositions = "all", dotsize = 0.8, stackratio = 0.8) +
     labs(x = "HPO inheritance", title = "pLI versus inheritance HPO") +
-    theme_bw()
+    theme_bw() +
+    theme(text = element_text(size = 20))
   
   pdf("Phenotypes/inheritance.pdf", width = 15)
   print(inh_genes_fig)
@@ -382,22 +388,24 @@ if (plot == "true"){
     geom_bar(stat = "identity", fill = "skyblue4") +
     coord_cartesian(ylim = c(1, 1.1 * max(fraction_cells_PCHiC$Freq)), expand = F) +
     scale_y_log10() +
-    labs(x = paste0("Interaction found in nr of cell types (", nrcells, " cell types)"), y = "Nr. of snv gene combinations", title = "SNV-Gene interactions according th Promoter Capture HiC") +
+    labs(x = paste0("Interaction found in nr of cell types (", nrcells, " cell types)"), y = "Nr of SNVs with linked gene", title = "SNV-Gene interactions according to Promoter Capture HiC") +
     scale_x_discrete(labels = seq(0, nrcells)) +
     theme_bw() +
-    theme(panel.grid.major.x = element_blank())
+    theme(panel.grid.major.x = element_blank(), text = element_text(size = 20))
   
   pchic_regbuild_fig = ggplot(data = snv_gene_table, aes(x = fraction_cells_PCHiC, color = Ensemblregbuild)) +
     geom_density() +
     coord_cartesian(expand = F) +
     labs(y = "Density", x = paste0("Interaction found in fraction of cells (", nrcells, " cell types)"), title = "SNV-Gene interactions according to Promoter Capture HiC") +
-    theme_bw()
+    theme_bw() +
+    theme(text = element_text(size = 20))
   
   pchic_distance_fig = ggplot(data = snv_gene_table, aes(x = distancetostart, y = fraction_cells_PCHiC)) +
     geom_point() +
     geom_smooth(method = "gam") +
     labs(x = "distance between snv and start of gene", y = "Interaction found in fraction of cell types", title = "Effect of distance between snv and gene on the Promoter Capture HiC interactions") +
-    theme_bw()
+    theme_bw() +
+    theme(text = element_text(size = 20))
   
   pdf("Possibly_pathogenic/SNVs/Near_gene/pchic.pdf")
   print(pchic_fig)
@@ -435,7 +443,7 @@ possPathogenic$padj_local_nona = ifelse(is.na(possPathogenic$padj_local), 1, pos
 
 write.table(possPathogenic, "Possibly_pathogenic/SNVs/Near_gene/possibly_pathogenic.txt", quote = F, row.names = F, sep = "\t")
 possPathogenicTableReport = possPathogenic %>%  dplyr::select(seqnames, start, REF, ALT, sample, hgnc_symbol, pLI, RVIS, HI, DDG2P, GoNLv5_AC, gnomAD_AC, PON_COUNT, DANN, phastCons46way, snpsift_impact, distance, distancetostart, distancetotss, genes_between, Ensemblregbuild, same_gene, phenoMatchScore, baseMean, log2FoldChange, log2FoldChange_shrunk, pvalue, padj_local, fraction_cells_PCHiC_makeup, Fetal_Brain_Female, Fetal_Brain_Male, Brain_Hippocampus_Middle_short, Brain_Germinal_Matrix_short, CD14_Primary_Cells_short)
-write.table(possPathogenic, "Possibly_pathogenic/SNVs/Near_gene/possibly_pathogenic_interestingcollumns.txt", quote = F, row.names = F, sep = "\t")
+write.table(possPathogenicTableReport, "Possibly_pathogenic/SNVs/Near_gene/possibly_pathogenic_interestingcollumns.txt", quote = F, row.names = F, sep = "\t")
 
 ###For exonic variants
 possPathogenicExonic = snv_gene_table %>% dplyr::filter(exonic == "Exonic" & same_gene & as.numeric(phenoMatchScore) > 10 & Effects_exonic != "synonymous_variant")
@@ -585,24 +593,24 @@ if (plot == "true"){
   
   #Facet 6: PCHIC
   PCHiCInteractions = data.frame(id = possPathogenic$phenoAsId,
-                        Variable = "PCHIC",
+                        Variable = "PCHi-C",
                         Facet = "Interaction",
                         Value = possPathogenic$fraction_cells_PCHiC * 100,
                         Label = possPathogenic$fraction_cells_PCHiC_makeup)
   #Combine all variables.
-  plotData = rbind(Patient, Genesymbol, Distance, Genesbetween, Ensemblregbuild, Fetal_Brain_Female, Fetal_Brain_Male, DannTop, phastcons46way, Phenomatch_Score, DDG2P, pLI, RVIS, HI, RNAfoldchange, PCHiCInteractions)
+  plotData = rbind(Patient, Genesymbol, Distance, Genesbetween, Ensemblregbuild, Fetal_Brain_Female, Fetal_Brain_Male, DannTop, phastcons46way, Phenomatch_Score, DDG2P, pLI, HI, RNAfoldchange, PCHiCInteractions)
   
   #plotting parameters
   bottommargin = 0.5
   nrmuts = nrow(possPathogenic)
-  width = c(rep(1.2, nrmuts), rep(1, 3 * nrmuts), rep(4.4, nrmuts), rep(1.2, 2 * nrmuts), rep(1, 9 * nrmuts))
-  hjust = c(rep(0.52, nrmuts), rep(0.5, 3 * nrmuts), rep(0.85, nrmuts), rep(0.6, nrmuts), rep(0.55, nrmuts), rep(0.5, 9 * nrmuts))
+  width = c(rep(1.2, nrmuts), rep(1, 3 * nrmuts), rep(4.4, nrmuts), rep(1.2, 2 * nrmuts), rep(1, 8 * nrmuts))
+  hjust = c(rep(0.52, nrmuts), rep(0.5, 3 * nrmuts), rep(0.85, nrmuts), rep(0.6, nrmuts), rep(0.55, nrmuts), rep(0.5, 8 * nrmuts))
   
   ReportFig = ggplot(data = plotData, aes(x = Variable, y = id, fill = Value, width = width)) + 
     geom_tile(col = "black") + 
     geom_text(aes(label = Label, hjust = hjust), size = 3, na.rm = T) + 
     facet_grid(~ Facet, scales = "free", space = "free") + 
-    scale_fill_gradient2(low = "darkblue", mid = "white", high = rgb(178,34,34, maxColorValue = 255), na.value = "gray", guide = F)+
+    scale_fill_gradient2(low = "darkblue", mid = "white", high = rgb(178,34,34, maxColorValue = 255), na.value = "gray", guide = F) +
     scale_x_discrete(position = "top") +
     theme_minimal() +
     theme(axis.ticks.y = element_blank(), 

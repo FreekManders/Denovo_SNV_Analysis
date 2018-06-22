@@ -205,7 +205,7 @@ vcfs2 = vcfs %>% dplyr::select("Sample", "Run", "regbuild", chromhmms) %>% melt(
 mutsbystate = ggplot(data = vcfs2, aes(x = Celltype_or_tissue, fill = Chromatin_state, y = count)) +
   geom_bar(stat = "identity", position = "dodge") +
   coord_cartesian(ylim = c(1, 1600), expand = F) + 
-  labs(x = "Celtype or tissue", y = "Nr. of denovo SNVS", title = "Nr of denovo SNVs in different chromatin states") +
+  labs(x = "Celtype or tissue", y = "Nr of de novo SNVS", title = "Nr of de novo SNVs in different chromatin states") +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 20, size = 12, margin = margin(t = 15), vjust = 0.75), text = element_text(size = 20)) + 
   scale_fill_manual(name = "Chromatin state", values = chrstatecolors) +
@@ -216,7 +216,7 @@ mutsbystateandbuild = ggplot(data = vcfs3, aes(x = Celltype_or_tissue, fill = Ch
   geom_bar(stat = "identity", position = "dodge") +
   facet_grid(. ~ regbuild, scales = "free", space = "free") +
   coord_cartesian(ylim = c(1, 1600), expand = F) + 
-  labs(x = "Celtype or tissue", y = "Nr. of denovo SNVs", title = "Nr of denovo SNVs in different chromatin states") +
+  labs(x = "Celtype or tissue", y = "Nr of de novo SNVs", title = "Nr of de novo SNVs in different chromatin states") +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 20, size = 8, margin = margin(t = 15))) + 
   scale_fill_manual(name = "Chromatin state", values = chrstatecolors) +
@@ -307,7 +307,7 @@ nrnotNA = sum(!is.na(vcfs$phastcons))
 navsnotna = data.frame("category" = c("No score (no alignment)", "Score present"), "counts" = c(nrNA, nrnotNA))
 navsnotnaFig = ggplot(data = navsnotna, aes(x = category, y = counts)) +
   geom_bar(stat = "identity", fill = "darkblue") +
-  labs(x = "", y = "Nr. of denovo SNVs", title = "Phastscore present") +
+  labs(x = "", y = "Nr of de novo SNVs", title = "Phastscore present") +
   theme_bw() + 
   theme(text = element_text(size=20))
 
@@ -455,19 +455,18 @@ mutsindb = vcfs %>% dplyr::select(Exoniclabel, pathogenic) %>% group_by(Exonicla
 dbsbyregionsAbsFig = ggplot(data = mutsindb, aes(y = counts, x = Exoniclabel, fill = pathogenic)) + 
   geom_bar(stat = "identity", position = "dodge") +
   theme_bw() + 
-  labs(y = "Nr of denovo SNVs", x = "Genomic region", title = "gnomAD, GoNL and HMF-PON occurences") + 
+  labs(y = "Nr of de novo SNVs", x = "Genomic region", title = "gnomAD, GoNL and HMF-PON occurences") + 
   coord_cartesian(ylim = c(0, 2000), expand = F) +
-  theme(axis.text.x = element_text(angle = 80, size = 10, margin = margin(t = 25))) +
-  theme(panel.grid.major.x = element_blank())
+  theme(axis.text.x = element_text(angle = 80, size = 20, margin = margin(t = 25)), panel.grid.major.x = element_blank(), text = element_text(size = 20))
 
 
 dbsbyregionsRelFig = ggplot(data = mutsindb, aes(y = countsbygroup, x = Exoniclabel, fill = pathogenic)) + 
   geom_bar(stat = "identity", position = "dodge") +
   theme_bw() + 
-  labs(y = "Percentage of denovo SNVs", x = "Genomic region", title = "gnomAD, GoNL and HMF-PON occurences") + 
+  labs(y = "Percentage of de novo SNVs", x = "Genomic region", title = "gnomAD, GoNL and HMF-PON occurences") + 
   scale_y_continuous(labels = scales::percent) +
   coord_cartesian(ylim = c(0, 1), expand = F) +
-  theme(axis.text.x = element_text(angle = 80, size = 10, margin = margin(t = 25)), panel.grid.major.x = element_blank())
+  theme(axis.text.x = element_text(angle = 80, size = 20, margin = margin(t = 25)), panel.grid.major.x = element_blank(), text = element_text(size = 20))
 
 pdf(paste0(opt$OUTPUT_PATH, "/Characteristics_denovo/vcfannotations/gnomAD_GoNL_exonsvsnonexon.pdf"))
 dbsbyregionsAbsFig
@@ -491,11 +490,11 @@ databasesdistFig = ggplot(data = acCounts, aes(y = value, x = variable)) +
   geom_boxplot() +
   geom_dotplot(stackdir = "center", binaxis = "y", position = "dodge", binwidth = 0.04, binpositions = "all", dotsize = 1, stackratio = 0.8) +
   scale_y_log10() +
-  labs(y = "Allele count", x = "Database", title = "gnomAD, GoNL and HMF-PON allele counts in the denovo SNVs") +
+  labs(y = "Allele count", x = "Database", title = "gnomAD, GoNL and HMF-PON allele counts in the de novo SNVs") +
   theme_bw()
 
 pdf(paste0(opt$OUTPUT_PATH, "/Characteristics_denovo/vcfannotations/gnomAD_GoNL_distribution"))
-grid.arrange(gTree(children=vennshared), top="Denovo SNVs in gnomAD, GoNL and HMF-PON")
+grid.arrange(gTree(children=vennshared), top="De novo SNVs in gnomAD, GoNL and HMF-PON")
 databasesdistFig
 dev.off()
 
