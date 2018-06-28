@@ -18,7 +18,7 @@ args = parser.parse_args()
 filelist = args.FILELIST
 outdir = "{0}/Callableregion_NrMendelViols".format(args.OUTPUT_PATH)
 		
-###Remove the missing GTs from the MendelViol files.
+###Filter the phased vcf outputted by PBT with the locations in the MendelViol file
 with open(filelist) as f1:
 	next(f1)
 	for line in f1:
